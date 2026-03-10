@@ -1,4 +1,86 @@
 <!DOCTYPE html>
+:root {
+  overflow: hidden;
+  border-radius: 30px;
+  background: #0f2240;
+  padding: 16px;
+  box-shadow: var(--shadow);
+}
+.demo-video video { border-radius: 22px; width: 100%; }
+.demo-sidebar {
+  display: grid;
+  gap: 18px;
+}
+.demo-note {
+  padding: 22px;
+  border-radius: 24px;
+  background: rgba(255,255,255,.78);
+  border: 1px solid rgba(22,50,92,.08);
+}
+.demo-note h3 { margin: 0 0 8px; }
+.demo-note p, .demo-note li { color: var(--muted); }
+.demo-note ul { margin: 0; padding-left: 18px; }
+
+.cta {
+  padding: 56px 0 84px;
+}
+.cta-box {
+  position: relative;
+  overflow: hidden;
+  border-radius: 36px;
+  padding: 40px;
+  color: #fff;
+  background: linear-gradient(135deg, var(--brand) 0%, var(--brand-2) 100%);
+  box-shadow: 0 28px 70px rgba(14,31,59,.22);
+}
+.cta-box::before,
+.cta-box::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(139,231,232,.12);
+}
+.cta-box::before { width: 280px; height: 280px; right: -70px; top: -110px; }
+.cta-box::after { width: 220px; height: 220px; left: -70px; bottom: -110px; }
+.cta-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.cta-content h2 { margin: 0; font-size: clamp(2rem, 4vw, 3rem); line-height: 1.02; }
+.cta-content p { margin: 14px 0 0; max-width: 620px; color: rgba(255,255,255,.8); }
+
+.footer {
+  padding: 0 0 44px;
+  color: var(--muted);
+}
+.footer-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  border-top: 1px solid rgba(22,50,92,.08);
+  padding-top: 26px;
+}
+
+@media (max-width: 980px) {
+  .hero-grid, .grid-3, .grid-2, .demo-layout, .kpi-row { grid-template-columns: 1fr; }
+  .nav-links { display: none; }
+  .page-hero { padding-top: 46px; }
+}
+
+@media (max-width: 640px) {
+  .container { width: min(var(--max), calc(100% - 20px)); }
+  .nav { min-height: 70px; }
+  h1 { font-size: 2.55rem; }
+  .hero-copy p, .lead, .section-head p { font-size: 1rem; }
+  .hero-visual, .media-card, .feature-card, .comparison, .cta-box, .demo-note { border-radius: 24px; }
+}
         <h2>Built for teams that cannot afford queue confusion.</h2>
         <p>When assignments matter, your team needs a system that stays clear under pressure and keeps work moving without manual coordination.</p>
       </div>
