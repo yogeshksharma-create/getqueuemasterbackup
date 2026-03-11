@@ -461,6 +461,7 @@ function escapeHtml(value) {
 function bindEvents() {
   els.signUpBtn.addEventListener("click", signUp);
   els.signInBtn.addEventListener("click", signIn);
+  els.forgotPasswordBtn.addEventListener("click", forgotPassword);
   els.logoutBtn.addEventListener("click", signOut);
   els.refreshQueuesBtn.addEventListener("click", loadQueues);
   els.createQueueBtn.addEventListener("click", createQueue);
