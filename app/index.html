@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>QueueMaster App</title>
+  <meta name="description" content="QueueMaster queue rotation app" />
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: #141b34;
+      --panel-2: #1a2344;
+      --text: #eef2ff;
+      --muted: #9fb0d9;
+      --accent: #7aa2ff;
+      --danger: #ff7a7a;
+      --success: #79d99e;
+      --border: rgba(255,255,255,0.08);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg, #0b1020 0%, #121934 100%);
+      color: var(--text);
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .card {
+      background: rgba(20,27,52,0.92);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+      backdrop-filter: blur(10px);
+    }
+
+    .grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .grid-2 {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    @media (max-width: 840px) {
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    h1, h2, h3, p {
+      margin-top: 0;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .space-between {
+      justify-content: space-between;
+    }
+
+    input, textarea, select, button {
+      font: inherit;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--panel-2);
+      color: var(--text);
+    }
+
+    button {
+      padding: 10px 14px;
+      border: 0;
+      border-radius: 10px;
+      background: var(--accent);
+      color: #081127;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button.secondary {
+      background: #2a365f;
+      color: var(--text);
+    }
+
+    button.danger {
+      background: var(--danger);
+      color: #2b0910;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .queue-item, .member-item, .event-item {
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+      margin-bottom: 10px;
+    }
+
+    .pill {
+      display: inline-block;
+      font-size: 12px;
+      padding: 5px 8px;
+      border-radius: 999px;
+      background: rgba(122,162,255,0.18);
+      color: #c9d8ff;
+      border: 1px solid rgba(122,162,255,0.25);
+    }
+
+    .status {
+      min-height: 24px;
+      color: var(--muted);
+    }
+
+    .success-text { color: var(--success); }
+    .danger-text { color: #ffb0b0; }
+
+    .small {
+      font-size: 13px;
+    }
+
+    .current-box {
+      padding: 16px;
+      border-radius: 14px;
+      background: rgba(122,162,255,0.12);
+      border: 1px solid rgba(122,162,255,0.25);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="row space-between">
+      <div>
+        <h1>QueueMaster</h1>
+        <p class="muted">Starter app using GitHub Pages + Supabase</p>
+      </div>
+      <div class="row">
+        <span id="userBadge" class="pill hidden"></span>
+        <button id="logoutBtn" class="secondary hidden">Log out</button>
+      </div>
+    </div>
+
+    <div id="status" class="status"></div>
+
+    <section id="authSection" class="card">
+      <h2>Sign in</h2>
+      <div class="grid grid-2">
+        <div>
+          <label>Email</label>
+          <input id="emailInput" type="email" placeholder="you@example.com" />
+        </div>
+        <div>
+          <label>Password</label>
+          <input id="passwordInput" type="password" placeholder="Password" />
+        </div>
+      </div>
+      <div class="row" style="margin-top: 12px;">
+        <button id="signInBtn">Sign in</button>
+        <button id="signUpBtn" class="secondary">Create account</button>
+      </div>
+      <p class="muted small" style="margin-top:12px;">
+        After creating the account, make one user an admin in Supabase by updating the
+        <code>profiles</code> table.
+      </p>
+    </section>
+
+    <section id="appSection" class="hidden">
+      <div class="grid grid-2">
+        <div class="card">
+          <div class="row space-between">
+            <h2 style="margin-bottom: 0;">Queues</h2>
+            <button id="refreshQueuesBtn" class="secondary">Refresh</button>
+          </div>
+
+          <div id="adminCreateQueue" class="hidden" style="margin: 14px 0 18px 0;">
+            <h3>Create queue</h3>
+            <div class="grid">
+              <input id="newQueueName" placeholder="Queue name" />
+              <input id="newQueueDescription" placeholder="Description (optional)" />
+              <select id="newQueueCommentsMode">
+                <option value="optional">Comments optional</option>
+                <option value="disabled">Comments disabled</option>
+                <option value="required">Comments required</option>
+              </select>
+              <button id="createQueueBtn">Create queue</button>
+            </div>
+          </div>
+
+          <div id="queuesList"></div>
+        </div>
+
+        <div class="card">
+          <h2>Selected queue</h2>
+          <div id="queueDetailEmpty" class="muted">Choose a queue to view details.</div>
+
+          <div id="queueDetail" class="hidden">
+            <div class="row space-between">
+              <div>
+                <h3 id="queueName"></h3>
+                <p id="queueDescription" class="muted"></p>
+              </div>
+              <div>
+                <span id="queueCommentsMode" class="pill"></span>
+              </div>
+            </div>
+
+            <div class="current-box">
+              <div class="muted small">Current person</div>
+              <div id="currentPerson" style="font-size: 24px; font-weight: 700;">—</div>
+              <div id="currentUpdatedAt" class="muted small"></div>
+            </div>
+
+            <div style="margin-top: 16px;">
+              <h3>Advance queue</h3>
+              <textarea id="advanceComment" rows="3" placeholder="Optional comment"></textarea>
+              <div class="row" style="margin-top: 10px;">
+                <button id="advanceBtn">Advance</button>
+              </div>
+            </div>
+
+            <div style="margin-top: 18px;">
+              <h3>Members</h3>
+              <div id="membersList"></div>
+            </div>
+
+            <div style="margin-top: 18px;">
+              <h3>Recent activity</h3>
+              <div id="eventsList"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
