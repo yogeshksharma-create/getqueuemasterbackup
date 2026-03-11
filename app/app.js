@@ -13,6 +13,7 @@ const els = {
   passwordInput: document.getElementById("passwordInput"),
   signInBtn: document.getElementById("signInBtn"),
   signUpBtn: document.getElementById("signUpBtn"),
+  forgotPasswordBtn: document.getElementById("forgotPasswordBtn"),
   logoutBtn: document.getElementById("logoutBtn"),
   userBadge: document.getElementById("userBadge"),
 
