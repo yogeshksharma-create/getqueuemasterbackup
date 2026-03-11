@@ -111,7 +111,25 @@ async function signIn() {
 
   setStatus("Signed in.", "success");
 }
+async function forgotPassword() {
+  const email = els.emailInput.value.trim();
 
+  if (!email) {
+    setStatus("Enter your email first.", "error");
+    return;
+  }
+
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.origin + "/app/"
+  });
+
+  if (error) {
+    setStatus(error.message, "error");
+    return;
+  }
+
+  setStatus("Password reset email sent.", "success");
+}
 async function signOut() {
   const { error } = await supabase.auth.signOut();
   if (error) {
